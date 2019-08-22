@@ -4,20 +4,17 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js" 
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous"></script>
+        <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
         <link rel="stylesheet" type="text/css" 
-            href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+            href="{{ url_for('static', filename='styles/semantic.css') }}">
         {% block page_css %}{% endblock %}
-        <!-- <script src="static/js/index.js"></script> -->
         <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
         <!-- <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> -->
     </head>
 
     <body>
-        {% block body %} {% endblock %}
+        {% block body %}{% endblock %}
+        <script src="{{ url_for('static', filename='js/semantic.min.js') }}"></script>
         {% block page_scripts %}{% endblock %}
     </body>
 </html>
