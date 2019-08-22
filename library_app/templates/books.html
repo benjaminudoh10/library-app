@@ -1,0 +1,129 @@
+{% extends '_blank.html' %}
+
+{% block content %}
+{% if books %}
+<table class="ui celled striped table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Copies left</th>
+            <th>Edition</th>
+            <th>ISBN</th>
+            <th>Year</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for book in books %}
+        <tr>
+            <td>
+                {{ book.title }} - 
+                <a class="book-detail" href='#{{ book.id }}'>Details</a>
+            </td>
+            <td>{{ book.author.name }}</td>
+            <td>{{ book.copies }}</td>
+            <td>{{ book.edition }}</td>
+            <td>{{ book.isbn }}</td>
+            <td>{{ book.year }}</td>
+            <td class="left aligned collapsing">
+                <a class="ui green icon button edit" 
+                    data-value="{{ book.id }}">
+                    <i class="edit icon"></i>
+                </a>
+                <a class="ui red icon button delete book" 
+                    data-value="{{ book.id }}">
+                    <i class="trash icon"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<h2>Add a book</h2>
+<form method="POST" class="ui large form" id="book-form">
+    <div class="ui stacked secondary segment">
+        <div class="field">
+            <div class="ui left icon input">
+                <!-- <i class="user icon"></i> -->
+                <input type="text" name="title" required placeholder="Book title" />
+            </div>
+        </div>
+        <div class="field">
+            <div class="ui left icon input">
+                <!-- <i class="user icon"></i> -->
+                <input type="text" name="edition" required 
+                    placeholder="Book edition" />
+            </div>
+        </div>
+        <div class="field">
+            <div class="ui left icon input">
+                <!-- <i class="user icon"></i> -->
+                <input type="text" name="isbn" required 
+                    placeholder="ISBN" />
+            </div>
+        </div>
+        <div class="field">
+            <div class="ui left icon input">
+                <!-- <i class="user icon"></i> -->
+                <input type="text" name="year" 
+                    placeholder="Year of publishing" />
+            </div>
+        </div>
+        <div class="field">
+            <div class="ui left icon input">
+                <!-- <i class="user icon"></i> -->
+                <input type="text" name="pages" required 
+                    placeholder="Number of pages" />
+            </div>
+        </div>
+        <div class="field">
+            <div class="ui left icon input">
+                <!-- <i class="user icon"></i> -->
+                <input type="text" name="copies" required 
+                    placeholder="Number of copies to add" />
+            </div>
+        </div>
+        <div class="field">
+            <div class="ui left icon input">
+                <!-- <i class="user icon"></i> -->
+                <textarea type="text" name="description" required 
+                    placeholder="Short description"></textarea>
+            </div>
+        </div>
+        <div class="field">
+            <div class="ui selection dropdown">
+                <input name="author" type="hidden">
+                <div class="default text">Select an author</div>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    {% for author in authors %}
+                    <div class="item" data-value="{{ author.id }}">
+                        {{ author.name }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <br>
+        <input class="ui blue large button" type="submit" required />
+    </div>
+    <div class="ui error message"></div>
+</form>
+
+<div class="ui modal" id="bookDetailsModal">
+    <i class="close icon"></i>
+    <div class="header">
+        Book Details
+    </div>
+    <div class="content">
+        <p>Details about the book:</p>
+        <p>Title: </p>
+    </div>
+    <div class="actions">
+        <div class="ui green ok positive button">OK</div>
+    </div>
+</div>
+{% endblock %}

@@ -97,4 +97,60 @@ def delete_author(author_id):
         return json.dumps({'message': 'Author deleted successfully.'})
     except:
         db.session.rollback()
-        return json.dumps({'error': 'Error encountered while deleting author. Rolling back transaction.'})
+        return json.dumps({
+            'error': 'Error encountered while deleting author. Rolling back transaction.'
+        })
+
+
+@app.route('/books', methods=['POST', 'GET'])
+@login_required
+def book():
+    if request.method == 'POST':
+        title = request.form['title']
+        edition = request.form['edition']
+        isbn = request.form['isbn']
+        pages = request.form['pages']
+        year = request.form['year']
+        copies = request.form['copies']
+        description = request.form['description']
+        author_id = request.form['author']
+        author = db.session.query(models.Author).get(int(author_id))
+        book = models.Book(
+            title=title,
+            edition=edition,
+            isbn=isbn,
+            pages=pages,
+            year=year,
+            copies=copies,
+            description=description,
+            author=author
+        )
+        try:
+            db.session.add(book)
+            db.session.commit()
+        except:
+            db.session.rollback()
+        return json.dumps({'status': 'OK'})
+    elif request.method == 'GET':
+        context = {}
+        books = db.session.query(models.Book).all()
+        authors = db.session.query(models.Author).all()
+        context['books'] = books
+        context['authors'] = authors
+        return render_template('books.html', **context)
+
+
+@app.route('/books/<book_id>', methods=['DELETE'])
+@login_required
+def delete_book(book_id):
+    try:
+        book = db.session.query(models.Book).get(int(book_id))
+        db.session.delete(book)
+        db.session.commit()
+        return json.dumps({'message': 'Book deleted successfully.'})
+    except:
+        db.session.rollback()
+        return json.dumps({
+            'error': 'Error encountered while deleting book. Rolling back transaction.'
+        })
+
