@@ -7,10 +7,10 @@ $(document).ready(function () {
         })
     });
 
-    $('.ui.accordion').accordion();
     $('.ui.dropdown').dropdown();
     $('.ui.checkbox').checkbox();
     $('.ui.progress').progress();
+    $('.ui.modal').modal();
 
     $('#showToggle').hide();
     $('#hideToggle').show();
@@ -37,8 +37,8 @@ $(document).ready(function () {
             url: "/authors",
             data: $("#author-form").serialize(),
             success: function(response) {
-                console.log('resp ', response.status);
-                if (response && JSON.parse(response).status === 'OK') {
+                var json = JSON.parse(response);
+                if (response && json.status === 'OK') {
                     window.location.reload();
                 }
             },
@@ -48,10 +48,15 @@ $(document).ready(function () {
         })
     });
 
-    $(".red.icon.button.delete").click(function(event) {
+    $(".red.icon.button.delete.author").click(function(event) {
         event.preventDefault();
         event.stopImmediatePropagation();
         var value = $(this).data('value');
+        var delete_author =
+            confirm('Are you sure you want to delete this author?');
+        if (!delete_author) {
+            return
+        }
         $.ajax({
             method: "DELETE",
             url: "/authors/" + value,
@@ -69,5 +74,59 @@ $(document).ready(function () {
                 console.log('error ', error);
             }
         })
+    });
+
+    $("#book-form").submit(function(event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        $.ajax({
+            method: "POST",
+            url: "/books",
+            data: $("#book-form").serialize(),
+            success: function(response) {
+                var json = JSON.parse(response);
+                if (response && json.status === 'OK') {
+                    window.location.reload();
+                }
+            },
+            error: function(error) {
+                console.log('error ', error);
+            }
+        })
+    });
+
+    $(".red.icon.button.delete.book").click(function(event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        var value = $(this).data('value');
+        var delete_book =
+            confirm('Are you sure you want to delete this book?');
+        if (!delete_book) {
+            return
+        }
+        $.ajax({
+            method: "DELETE",
+            url: "/books/" + value,
+            success: function(response) {
+                var json = JSON.parse(response);
+                if (response) {
+                    if (json.error) {
+                        console.log('error ', response)
+                    } else if (json.message) {
+                        window.location.reload();
+                    }
+                }
+            },
+            error: function(error) {
+                console.log('error ', error);
+            }
+        })
+    });
+    
+    $('.book-detail').click(function (event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        // $(this).attr('href').substr(1);
+        $('#bookDetailsModal').modal('show');
     });
 });
