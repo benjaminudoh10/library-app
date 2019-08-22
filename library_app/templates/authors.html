@@ -1,0 +1,54 @@
+{% extends '_blank.html' %}
+
+{% block content %}
+{% if authors %}
+<table class="ui celled striped table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for author in authors %}
+        <tr>
+            <td>{{ author.name }}</td>
+            <td>{{ author.email }}</td>
+            <td class="left aligned collapsing">
+                <a class="ui green icon button edit" 
+                    data-value="{{ author.id }}">
+                    <i class="pencil icon"></i>
+                </a>
+                <a class="ui red icon button delete" 
+                    data-value="{{ author.id }}">
+                    <i class="trash icon"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<h2>Add an author</h2>
+<form method="POST" class="ui large form" id="author-form">
+    <div class="ui stacked secondary segment">
+        <div class="field">
+            <div class="ui left icon input">
+                <i class="user icon"></i>
+                <input type="text" name="name" required placeholder="Author's name" />
+            </div>
+        </div>
+        <div class="field">
+            <div class="ui left icon input">
+                <i class="lock icon"></i>
+                <input type="text" name="email" placeholder="Author's email" required />
+            </div>
+        </div>
+        <br>
+        <input class="ui blue large button" type="submit" required />
+    </div>
+    <div class="ui error message"></div>
+</form>
+{% endblock %}

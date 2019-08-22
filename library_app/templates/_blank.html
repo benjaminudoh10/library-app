@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% block page_css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}">
+{% endblock %}
+
+{% block body %}
+<body>
+    <div class="ui fixed top menu">
+        <a href="javascript:void(0)" class="icon active item" id="hideToggle">
+            <h3><i class="chevron left icon"></i></h3>
+        </a>
+        <a href="javascript:void(0)" class="icon active item" id="showToggle" style="display: none;">
+            <h3><i class="chevron right icon"></i></h3>
+        </a>
+        <a href="dashboard.html" class="item">
+            <h3>Library app</h3>
+        </a>
+        <div class="menu right">
+            <a class="icon item pointer" data-toggle="popup" 
+                data-content="#mail" data-position="bottom right">
+                <i class="mail icon"></i>
+            </a>
+            <div id="mail" class="ui fluid right popup" 
+                style="min-width:400px;padding-top:30px;">
+                <div class="ui divided items">
+                    <div class="item">
+                        <i class="large user icon"></i>
+                        <div class="content">
+                            <a class="header">Stevie Feliciano</a>
+                            <div class="description">
+                                Stevie Feliciano is a <a>library scientist</a>...
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <i class="large user icon"></i>
+                        <div class="content">
+                            <a class="header">Veronika Ossi</a>
+                            <div class="description">
+                                Veronika Ossi is a set designer living...
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <i class="large user icon"></i>
+                        <div class="content">
+                            <a class="header">Jenny Hess</a>
+                            <div class="description">
+                                Jenny is a student <a>the New School</a>...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui divider"></div>
+                <a href="" class="ui right floated tiny button">All Message</a>
+            </div>
+            <a class="icon item pointer" data-toggle="popup" 
+                data-content="#notif" data-position="bottom right">
+                <i class="bell icon"></i>
+            </a>
+            <div id="notif" class="ui fluid right popup" 
+                style="min-width:400px;padding-top:30px;">
+                <div class="ui divided items">
+                    <div class="item">
+                        <div class="content">
+                            <i class="bell icon"></i> Illum ratione aliquam veniam voluptates porro,
+                            <div class="extra content">
+                                Sunday, 20-03-2016
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="content">
+                            <i class="bell icon"></i> Facere, quas maxime at consequuntur
+                            <div class="extra content">
+                                Sunday, 20-03-2016
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="content">
+                            <i class="bell icon"></i> Officiis ex sint distinctio.
+                            <div class="extra content">
+                                Sunday, 20-03-2016
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui divider"></div>
+                <a href="" class="ui right floated tiny button">All Notification</a>
+            </div>
+            <a class="icon item pointer" data-toggle="popup" 
+                data-content="#user" data-position="bottom right">
+                <i class="large user icon"></i>
+            </a>
+            <div id="user" class="ui right popup">
+                <div class="ui secondary vertical menu">
+                    <div class="header item">USER MENU</div>
+                    <a href="" class="item">
+                        Profile <i class="user icon"></i>
+                    </a>
+                    <a href="" class="item">
+                        Groups <i class="users icon"></i>
+                    </a>
+                    <a href="" class="item">
+                        Settings <i class="settings icon"></i>
+                    </a>
+                    <div class="ui divider"></div>
+                    <a href="/logout" class="item">
+                        Logout <i class="sign out icon"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="pusher">
+        <div class="ui fluid container">
+            <div class="ui two column grid">
+                <div class="side menu" id="sideMenu">
+                    <div align="center" class="profile">
+                        <br>
+                        <i class="inverted massive user icon"></i>
+                        <div class="ui white header">{{ current_user.name }}</div>
+                        <label class="ui label">{{ current_user.email }}</label>
+                        <div class="ui divider"></div>
+                    </div>
+                    <div class="ui fluid vertical menu" id="verticalMenu" tabindex="0"
+                        style="overflow: hidden; outline: none;">
+                        <a href="dashboard.html" class="item">
+                            <i class="dashboard icon"></i> 
+                            <span>Hire requests</span>
+                        </a>
+                        <a href="form.html" class="item">
+                            <i class="book icon"></i>
+                            <span>Resources</span>
+                        </a>
+                        <a href="table.html" class="item">
+                            <i class="users icon"></i>
+                            <span>Members</span>
+                        </a>
+                        <a href="chart.html" class="item">
+                            <i class="lock icon"></i>
+                            <span>Admin</span>
+                        </a>
+                        <a href="/authors" class="item">
+                            <i class="pencil icon"></i>
+                            <span>Authors</span>
+                        </a>
+                        <a href="progress.html" class="item">
+                            <i class="wrench icon"></i>
+                            <span>Settings</span>
+                        </a>
+                        <a href="/logout" class="item">
+                            <i class="logout icon"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="sixteen wide column" id="content">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <div class="ui success message">
+                                <i class="close icon"></i>
+                                <div class="header">
+                                    Error
+                                </div>
+                                {% for message in messages %}
+                                    <p>{{ message }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                    {% for message in get_flashed_messages() %}
+                    <div class="ui icon message transition hidden">
+                        <i class="cancel icon"></i>
+                        <div class="content">
+                            <div class="header">
+                            Error
+                            </div>
+                            <p>{{ message }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block page_scripts %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% endblock %}
+</body>
+{% endblock %}

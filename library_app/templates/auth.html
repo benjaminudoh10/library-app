@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block page_css %}
+<link rel="stylesheet" type="text/css" href="static/styles/auth.css">
+{% endblock %}
+
+{% block page_scripts %}
+<script src="static/js/auth.js"></script>
+{% endblock %}
+
+{% block body %}
+<!-- {{ get_flashed_messages() }} -->
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="ui error message">
+            <i class="close icon"></i>
+            <div class="header">
+                Error
+            </div>
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+<div class="ui middle aligned center aligned grid">
+    <div class="column">
+        <div id="login-div">
+            <h2 class="ui image header">
+                <div class="content">
+                    Log-in to your account
+                </div>
+            </h2>
+            <form method="POST" class="ui large form" id="login-form">
+                {{ login_form.csrf_token }}
+                <div class="ui stacked secondary segment">
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="user icon"></i>
+                            {{ login_form.login_email(
+                                placeholder=login_form.login_email.label.text
+                            ) }}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="lock icon"></i>
+                            {{ login_form.login_password(
+                                placeholder=login_form.login_password.label.text
+                            ) }}
+                        </div>
+                    </div>
+                    <div class="ui toggle checkbox">
+                        {{ login_form.remember_me() }}
+                        <label>
+                            {{ login_form.remember_me.label.text }}
+                        </label>
+                    </div>
+                    <br><br>
+                    {{ login_form.login_submit(
+                        class='ui fluid large teal submit button'
+                    ) }}
+                </div>
+                <div class="ui error message"></div>
+            </form>
+            <div class="ui message" id="login-message">
+                New to us? <a id="login-link" href="">Register</a>
+            </div>
+        </div>
+        <div id="register-div">
+            <h2 class="ui image header">
+                <div class="content">
+                    Sign-up for a free account
+                </div>
+            </h2>
+            <form method="POST" class="ui large form" id="register-form">
+                {{ register_form.csrf_token }}
+                <div class="ui stacked secondary segment">
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="user icon"></i>
+                            {{ register_form.email(
+                                id='register-email',
+                                placeholder=register_form.email.label.text
+                            ) }}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="user icon"></i>
+                            {{ register_form.fullname(
+                                placeholder=register_form.fullname.label.text
+                            ) }}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="user icon"></i>
+                            {{ register_form.username(
+                                placeholder=register_form.username.label.text
+                            ) }}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="phone icon"></i>
+                            {{ register_form.phone(
+                                placeholder=register_form.phone.label.text
+                            ) }}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="lock icon"></i>
+                            {{ register_form.password(
+                                id='register-password',
+                                placeholder=register_form.password.label.text
+                            ) }}
+                        </div>
+                    </div>
+                    {{ register_form.register_submit(
+                        id='register-submit',
+                        class='ui fluid large teal submit button'
+                    ) }}
+                </div>
+                <div class="ui error message"></div>
+            </form>
+            <div class="ui message" id="register-message">
+                Already have an account?
+                <a id="register-link" href="">Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

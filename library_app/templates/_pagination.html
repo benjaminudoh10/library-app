@@ -1,0 +1,37 @@
+{% macro pagination_widget(pagination, endpoint) %}
+    <div class="ui pagination menu">
+        {% if not pagination.has_prev %}
+            <a class="disabled item" href="#">
+                &laquo;
+            </a>
+        {% else %}
+            <a class="item" href="{{ url_for(endpoint, page = pagination.page - 1, **kwargs) }}">
+                &laquo;
+            </a>
+        {% endif %}
+        {% for p in pagination.iter_pages() %}
+            {% if p %}
+                {% if p == pagination.page %}
+                    <a class="active item" href="{{ url_for(endpoint, page = p, **kwargs) }}">
+                        {{ p }}
+                    </a>
+                {% else %}
+                    <a class="item" href="{{ url_for(endpoint, page = p, **kwargs) }}">
+                        {{ p }}
+                    </a>
+                {% endif %}
+            {% else %}
+                <a class="disabled" href="#">&hellip;</a>
+            {% endif %}
+        {% endfor %}
+        {% if not pagination.has_next %}
+            <a class="disabled item" href="#">
+                &raquo;
+            </a>
+        {% else %}
+            <a class="item" href="{{ url_for(endpoint, page = pagination.page + 1, **kwargs) }}">
+                &raquo;
+            </a>
+        {% endif %}
+    </div>
+{% endmacro %}
