@@ -1,8 +1,7 @@
 {% extends '_blank.html' %}
 
 {% block content %}
-{% if books %}
-<table class="ui celled striped table">
+<table class="ui celled striped table" id="book-list">
     <thead>
         <tr>
             <th>Title</th>
@@ -14,33 +13,8 @@
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
-        {% for book in books %}
-        <tr>
-            <td>
-                {{ book.title }} - 
-                <a class="book-detail" href='#{{ book.id }}'>Details</a>
-            </td>
-            <td>{{ book.author.name }}</td>
-            <td>{{ book.copies }}</td>
-            <td>{{ book.edition }}</td>
-            <td>{{ book.isbn }}</td>
-            <td>{{ book.year }}</td>
-            <td class="left aligned collapsing">
-                <a class="ui green icon button edit" 
-                    data-value="{{ book.id }}">
-                    <i class="edit icon"></i>
-                </a>
-                <a class="ui red icon button delete book" 
-                    data-value="{{ book.id }}">
-                    <i class="trash icon"></i>
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
+    <tbody></tbody>
 </table>
-{% endif %}
 
 <h2>Add a book</h2>
 <form method="POST" class="ui large form" id="book-form">
@@ -98,13 +72,7 @@
                 <input name="author" type="hidden">
                 <div class="default text">Select an author</div>
                 <i class="dropdown icon"></i>
-                <div class="menu">
-                    {% for author in authors %}
-                    <div class="item" data-value="{{ author.id }}">
-                        {{ author.name }}
-                    </div>
-                    {% endfor %}
-                </div>
+                <div class="menu" id="authors-list"></div>
             </div>
         </div>
         <br>
@@ -119,11 +87,16 @@
         Book Details
     </div>
     <div class="content">
-        <p>Details about the book:</p>
-        <p>Title: </p>
+        <table class="ui selectable celled table" id="display-book-details">
+            <tbody id="details"></tbody>
+        </table>
+        <div id="edit-book-details"></div>
     </div>
     <div class="actions">
         <div class="ui green ok positive button">OK</div>
     </div>
 </div>
+{% endblock %}
+{% block extra_scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/book/book.js') }}"></script>
 {% endblock %}
