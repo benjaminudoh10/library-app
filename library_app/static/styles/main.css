@@ -10,7 +10,7 @@ body {
   }
   .ui.fixed.top.menu {
     background-color: #005BAB;
-    z-index: 9999;
+    z-index: 25;
   }
   .ui.fixed.top.menu .item {
     color: #FFFFFF;
@@ -27,7 +27,7 @@ body {
     height: 100vh;
     padding: 10px 0px 0px 0px;
     position: fixed;
-    z-index: 9998;
+    z-index: 20;
     left: 0;
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;

@@ -1,8 +1,7 @@
 {% extends '_blank.html' %}
 
 {% block content %}
-{% if authors %}
-<table class="ui celled striped table">
+<table class="ui celled striped table" id="author-list">
     <thead>
         <tr>
             <th>Name</th>
@@ -10,26 +9,8 @@
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
-        {% for author in authors %}
-        <tr>
-            <td>{{ author.name }}</td>
-            <td>{{ author.email }}</td>
-            <td class="left aligned collapsing">
-                <a class="ui green icon button edit" 
-                    data-value="{{ author.id }}">
-                    <i class="edit icon"></i>
-                </a>
-                <a class="ui red icon button delete author" 
-                    data-value="{{ author.id }}">
-                    <i class="trash icon"></i>
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
+    <tbody></tbody>
 </table>
-{% endif %}
 
 <h2>Add an author</h2>
 <form method="POST" class="ui large form" id="author-form">
@@ -51,4 +32,7 @@
     </div>
     <div class="ui error message"></div>
 </form>
+{% endblock %}
+{% block extra_scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/author/author.js') }}"></script>
 {% endblock %}

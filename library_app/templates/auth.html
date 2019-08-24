@@ -9,20 +9,6 @@
 {% endblock %}
 
 {% block body %}
-<!-- {{ get_flashed_messages() }} -->
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <div class="ui error message">
-            <i class="close icon"></i>
-            <div class="header">
-                Error
-            </div>
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
-        </div>
-    {% endif %}
-{% endwith %}
 <div class="ui middle aligned center aligned grid">
     <div class="column">
         <div id="login-div">
@@ -31,6 +17,16 @@
                     Log-in to your account
                 </div>
             </h2>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="ui error message">
+                        <i class="close icon"></i>
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
             <form method="POST" class="ui large form" id="login-form">
                 {{ login_form.csrf_token }}
                 <div class="ui stacked secondary segment">

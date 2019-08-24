@@ -42,6 +42,15 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User {}, {}>'.format(self.name, self.email)
 
+    def to_json(self):
+        result = {}
+        result['id'] = self.id
+        result['name'] = self.name
+        result['phone'] = self.phone
+        result['username'] = self.username
+        result['email'] = self.email
+        result['role'] = self.role
+        return result
 
 # class Role(db.Model):
 #     '''
@@ -66,7 +75,7 @@ class Book(db.Model):
     edition = db.Column(db.String, nullable=False, index=True)
     year = db.Column(db.String, nullable=False, index=True)
     price = db.Column(db.String)
-    isbn = db.Column(db.String, nullable=False)
+    isbn = db.Column(db.String, nullable=False, unique=True)
     pages = db.Column(db.Integer)
     copies = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String)
@@ -76,6 +85,22 @@ class Book(db.Model):
 
     def __repr__(self):
         return '<Book {} {}>'.format(self.title, self.isbn)
+
+    def to_json(self):
+        result = {}
+        result['id'] = self.id
+        result['title'] = self.title
+        result['edition'] = self.edition
+        result['year'] = self.year
+        result['price'] = self.price
+        result['isbn'] = self.isbn
+        result['pages'] = self.pages
+        result['copies'] = self.copies
+        result['description'] = self.description
+        result['author'] = {}
+        author = self.author and self.author.to_json() or None
+        result['author'] = author
+        return result
 
 
 class Author(db.Model):
@@ -90,7 +115,15 @@ class Author(db.Model):
 
     def __repr__(self):
         return '<Author {} {}>'.format(self.name, self.email)
-
+    
+    def to_json(self):
+        result = {}
+        result['id'] = self.id
+        result['name'] = self.name
+        result['email'] = self.email
+        # result['books'] = [book.to_json() for book in self.books]
+        return result
+        
 
 # class Borrowed(db.Model):
 #     '''

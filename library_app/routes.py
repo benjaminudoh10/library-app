@@ -1,5 +1,5 @@
-from flask import render_template, flash
-from flask import request, jsonify, redirect, url_for, json
+from flask import render_template, flash, jsonify
+from flask import request, jsonify, redirect, url_for
 from flask_login import (
     current_user, login_user, logout_user, login_required)
 
@@ -81,10 +81,15 @@ def author():
             db.session.commit()
         except:
             db.session.rollback()
-        return json.dumps({'status': 'OK'})
-    elif request.method == 'GET':
+        return jsonify({'status': 'OK'})
+    elif request.method == 'GET' and not request.is_xhr:
+        return render_template('authors.html')
+    elif request.method == 'GET' and request.is_xhr:
         authors = db.session.query(models.Author).all()
-        return render_template('authors.html', authors=authors)
+        authors_json = [author.to_json() for author in authors]
+        return jsonify({
+            'authors': authors_json
+        })
 
 
 @app.route('/authors/<author_id>', methods=['DELETE'])
@@ -94,10 +99,12 @@ def delete_author(author_id):
         author = db.session.query(models.Author).get(int(author_id))
         db.session.delete(author)
         db.session.commit()
-        return json.dumps({'message': 'Author deleted successfully.'})
+        return jsonify({
+            'message': 'Author deleted successfully.'
+        })
     except:
         db.session.rollback()
-        return json.dumps({
+        return jsonify({
             'error': 'Error encountered while deleting author. Rolling back transaction.'
         })
 
@@ -130,14 +137,18 @@ def book():
             db.session.commit()
         except:
             db.session.rollback()
-        return json.dumps({'status': 'OK'})
-    elif request.method == 'GET':
-        context = {}
+        return jsonify({'status': 'OK'})
+    elif request.method == 'GET' and not request.is_xhr:
+        return render_template('books.html')
+    elif request.method == 'GET' and request.is_xhr:
         books = db.session.query(models.Book).all()
         authors = db.session.query(models.Author).all()
-        context['books'] = books
-        context['authors'] = authors
-        return render_template('books.html', **context)
+        books_json = [book.to_json() for book in books]
+        authors_json = [author.to_json() for author in authors]
+        return jsonify({
+            'books': books_json,
+            'authors': authors_json
+        })
 
 
 @app.route('/books/<book_id>', methods=['DELETE'])
@@ -147,10 +158,12 @@ def delete_book(book_id):
         book = db.session.query(models.Book).get(int(book_id))
         db.session.delete(book)
         db.session.commit()
-        return json.dumps({'message': 'Book deleted successfully.'})
+        return jsonify({
+            'message': 'Book deleted successfully.'
+        })
     except:
         db.session.rollback()
-        return json.dumps({
+        return jsonify({
             'error': 'Error encountered while deleting book. Rolling back transaction.'
         })
 
