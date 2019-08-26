@@ -1,14 +1,12 @@
 $(document).ready(function () {
     window.allData = {};
-    // $('#book-list').hide();
     $.ajax({
         method: "GET",
         url: "/books",
         success: function(response) {
-            if (response && response.books.length) {
+            if (response && response.books && response.books.length) {
                 allData['books'] = response.books;
                 for (var i = 0; i < allData.books.length; i++) {
-                    // var tr = document.createElement('tr');
                     var tr = $('<tr></tr>').addClass('book-row')
                         .append(
                             $('<td></td>').append(
@@ -42,6 +40,12 @@ $(document).ready(function () {
                         .append(
                             $('<td></td>').append(
                                 $('<a></a>')
+                                    .addClass('ui blue icon button hire book')
+                                    .data('value', allData.books[i].id)
+                                    .append($('<i></i>').addClass('cog icon'))
+                            )
+                            .append(
+                                $('<a></a>')
                                     .addClass('ui green icon button edit book')
                                     .data('value', allData.books[i].id)
                                     .append($('<i></i>').addClass('edit icon'))
@@ -57,7 +61,7 @@ $(document).ready(function () {
                 }
             }
 
-            if (response && response.authors.length) {
+            if (response && response.authors && response.authors.length) {
                 allData['authors'] = response.authors;
                 for (var j = 0; j < allData.authors.length; j++) {
                     var div = $('<div></div>')
@@ -71,33 +75,6 @@ $(document).ready(function () {
                     $('#authors-list').append(div);
                 }
             }
-            
-            $(".red.icon.button.delete.book").click(function(event) {
-                event.preventDefault();
-                event.stopImmediatePropagation();
-                var value = $(this).data('value');
-                var delete_book =
-                    confirm('Are you sure you want to delete this book?');
-                if (!delete_book) {
-                    return
-                }
-                $.ajax({
-                    method: "DELETE",
-                    url: "/books/" + value,
-                    success: function(response) {
-                        if (response) {
-                            if (response.error) {
-                                console.log('error ', response)
-                            } else if (response.message) {
-                                window.location.reload();
-                            }
-                        }
-                    },
-                    error: function(error) {
-                        console.log('error ', error);
-                    }
-                })
-            });
         },
         error: function(error) {
             console.log('error ', error);
@@ -199,6 +176,36 @@ $(document).ready(function () {
                     $('.ui.dropdown').dropdown();
                 }
             }).modal('show');
+        });
+    }, 1000);
+
+    // hire a book
+    setTimeout(function () {
+        $('.blue.icon.button.hire.book').click(function(event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            var value = $(this).data('value');
+            var borrow_book =
+                confirm('Are you sure you want to borrow this book?');
+            if (!borrow_book) {
+                return
+            }
+            $.ajax({
+                method: 'POST',
+                url: '/books/' + value + '/borrow',
+                success: function(response) {
+                    if (response) {
+                        if (response.error) {
+                            console.log('error ', response)
+                        } else if (response.message) {
+                            window.location.reload();
+                        }
+                    }
+                },
+                error: function(error) {
+                    console.log('error ', error);
+                }
+            })
         });
     }, 1000);
 

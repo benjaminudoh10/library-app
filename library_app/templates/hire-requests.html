@@ -1,0 +1,20 @@
+{% extends '_blank.html' %}
+
+{% block content %}
+<table class="ui celled striped table" id="hire-list">
+    <thead>
+        <tr>
+            <th>Book</th>
+            <th>User</th>
+            <th>Borrowed Date</th>
+            <th>Return Date</th>
+            <th>Return</th>
+            <th>Extend Rent</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+{% endblock %}
+{% block extra_scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/book/hires.js') }}"></script>
+{% endblock %}

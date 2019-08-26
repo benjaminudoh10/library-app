@@ -26,7 +26,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     # role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     role = db.Column(db.String, nullable=False, default='member')
-    books = db.relationship('Book', backref='user')
+    borrowed = db.relationship('Borrowed', backref='user')
 
     @property
     def password(self):
@@ -80,8 +80,8 @@ class Book(db.Model):
     copies = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String)
     author_id = db.Column(db.Integer, db.ForeignKey('authors.id'))
-    # Current user with the book
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    # Current users with the book
+    borrowed = db.relationship('Borrowed', backref='book')
 
     def __repr__(self):
         return '<Book {} {}>'.format(self.title, self.isbn)
@@ -125,8 +125,38 @@ class Author(db.Model):
         return result
         
 
-# class Borrowed(db.Model):
-#     '''
-#     This model describes the relationship between a book
-#     and the user who borrowed it
-#     '''
+class Borrowed(db.Model):
+    '''
+    This model describes the relationship between a book
+    and the user who borrowed it
+    '''
+    __tablename__ = 'borrows'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
+    _from = db.Column(db.Date, nullable=False)
+    to = db.Column(db.Date, nullable=False, index=True)
+
+    @property
+    def book():
+        book = db.session.query(Book).get(self.book_id)
+        return book
+    
+    @property
+    def user():
+        user = db.session.query(User).get(self.user_id)
+        return user
+
+    def __repr__(self):
+        book = db.session.query(Book).get(self.book_id)
+        user = db.session.query(User).get(self.user_id)
+        return f'<Book [{book.title}] borrowed by user [{user.name}]>'
+    
+    def to_json(self):
+        result = {}
+        result['id'] = self.id
+        result['user'] = self.user.to_json()
+        result['book'] = self.book.to_json()
+        result['from'] = self._from.isoformat()
+        result['to'] = self.to.isoformat()
+        return result
