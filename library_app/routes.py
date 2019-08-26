@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 from flask import render_template, flash, jsonify
 from flask import request, jsonify, redirect, url_for
 from flask_login import (
@@ -167,3 +169,103 @@ def delete_book(book_id):
             'error': 'Error encountered while deleting book. Rolling back transaction.'
         })
 
+
+@app.route('/books/<book_id>/borrow', methods=['POST', 'GET'])
+@login_required
+def borrow_book(book_id):
+    if request.method == 'POST':
+        book = db.session.query(models.Book).get(int(book_id))
+        from_date = date.today() # request.form['from_date']
+        to_date = date.today() + timedelta(days=2) # request.form['to_date']
+        book_borrowed = db.session.query(models.Borrowed).filter_by(
+            book=book, user=current_user)
+        if book_borrowed:
+            return jsonify({
+                'error': 'Book already in possession.'
+            })
+        if book.copies:
+            try:
+                borrowed = models.Borrowed(
+                    book=book,
+                    user=current_user,
+                    _from=from_date,
+                    to=to_date
+                )
+                book.copies -= 1
+                db.session.add(borrowed)
+                db.session.add(book)
+                db.session.commit()
+                return jsonify({
+                    'message': 'Book borrowed successfully'
+                })
+            except:
+                db.session.rollback()
+                return jsonify({
+                    'error': 'Encountered an error while borrowing this book. Try again later.'
+                })
+        else:
+            return jsonify({
+                'error': 'Books no longer in stock'
+            })
+
+
+@app.route('/hire', defaults={'id': 0}, methods=['GET', 'PUT', 'DELETE'])
+@app.route('/hire/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+@login_required
+def hire_requests(id):
+    if request.method == 'GET':
+        if request.is_xhr:
+            hire_requests = db.session.query(models.Borrowed).all()
+            hires = [hire.to_json() for hire in hire_requests]
+            return jsonify({
+                'hires': hires
+            })
+        else:
+            return render_template('hire-requests.html')
+    elif request.method == 'DELETE':
+        # returning the borrowed book
+        error = ''
+        hired_request = db.session.query(models.Borrowed).get(int(id))
+        if hired_request:
+            book = hired_request.book
+            if book:
+                book.copies += 1
+                try:
+                    db.session.add(book)
+                    db.session.commit()
+                except:
+                    db.session.rollback()
+                    error = 'Book count increment failed'
+            try:
+                db.session.delete(hired_request)
+                if not error:
+                    db.session.commit()
+                    return jsonify({
+                        'message': 'Book has been returned successfully'
+                    })
+                else:
+                    db.session.rollback()
+                    return jsonify({
+                        'error': error
+                    })
+            except:
+                db.session.rollback()
+                return jsonify({
+                    'error': 'Failed to return book. Try again later.'
+                })
+    elif request.method == 'PUT':
+        # extending the request
+        hired_request = db.session.query(models.Borrowed).get(int(id))
+        if hired_request:
+            hired_request.to = hired_request.to + timedelta(days=2)
+            try:
+                db.session.add(hired_request)
+                db.session.commit()
+                return jsonify({
+                    'message': 'Return date extended successfully'
+                })
+            except:
+                db.session.rollback()
+                return jsonify({
+                    'error': 'Failed to extend return date.'
+                })
